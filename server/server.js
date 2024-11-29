@@ -33,23 +33,15 @@ async function getAppointmentDetailsForPocView(pocId, clientId) {
       if (schedule) {
         const appointmentsCount =
           schedule.appointments_per_slot - slot.appointments_per_slot;
-        const date = moment.tz(
-          slot.Schedule_Date,
-          "YYYY-MM-DD",
-          "Asia/Kolkata"
-        ); // Asia/Kolkata is the time zone for India Standard Time
-        const time = moment.tz(
-          `1970-01-01T${slot.Start_Time}Z`,
-          "YYYY-MM-DDTHH:mm:ssZ",
-          "Asia/Kolkata"
+        const date = moment(slot.Schedule_Date);
+        const time = moment(slot.Start_Time, "HH:mm:ss");
+        const currentTime = moment();
+        const appointmentTime = moment(
+          `${slot.Schedule_Date} ${slot.Start_Time}`,
+          "YYYY-MM-DD HH:mm:ss"
         );
-        const currentTime = moment.tz("Asia/Kolkata");
-        const appointmentTime = moment.tz(
-          `${date.format("YYYY-MM-DD")}T${time.format("HH:mm:ss")}Z`,
-          "YYYY-MM-DDTHH:mm:ssZ",
-          "Asia/Kolkata"
-        );
-        if (appointmentsCount > 0 && appointmentTime.isAfter(currentTime)) {
+
+        if (appointmentsCount > 0) {
           appointmentDetails.push({
             sNo: sNo++,
             date: date.format("YYYY-MM-DD"),
